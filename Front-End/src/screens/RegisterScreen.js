@@ -1,71 +1,62 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-import axios from 'axios';
-import LoginForm from './LoginScreen';
+import React, {useContext, useState} from 'react';
+import {
+  Button,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {AuthContext} from '../context/AuthContext';
 
+const RegisterScreen = ({navigation}) => {
+  const [name, setName] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [password, setPassword] = useState(null);
 
-const SignupForm = ({ onLoginPress }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-
-  const handleSignup = async () => {
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/api/auth/login', {
-        name,
-        email,
-        password,
-      });
-      // Gérer la réponse de l'API ici, par exemple afficher un message de succès
-      console.log(response.data);
-      // Réinitialiser les champs du formulaire
-      setName('');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-    } catch (error) {
-      // Gérer les erreurs de l'API ici, par exemple afficher un message d'erreur
-      console.error(error);
-    }
-  };
-
-  const handleLoginPress = () => {
-    // Appeler la fonction de rappel pour passer à l'écran de connexion
-    onLoginPress();
-  };
+  const {isLoading, register} = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Nom"
-        value={name}
-        onChangeText={setName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Mot de passe"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirmer le mot de passe"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-      />
-      <Button title="S'inscrire" onPress={handleSignup} /> 
-      <Button title="Déjà inscrit ? Se connecter" onPress={handleLoginPress} />
+      <Spinner visible={isLoading} />
+      <View style={styles.wrapper}>
+        <TextInput
+          style={styles.input}
+          value={name}
+          placeholder="Enter name"
+          onChangeText={text => setName(text)}
+        />
+
+        <TextInput
+          style={styles.input}
+          value={email}
+          placeholder="Enter email"
+          onChangeText={text => setEmail(text)}
+        />
+
+        <TextInput
+          style={styles.input}
+          value={password}
+          placeholder="Enter password"
+          onChangeText={text => setPassword(text)}
+          secureTextEntry
+        />
+
+        <Button
+          title="Register"
+          onPress={() => {
+            register(name, email, password);
+          }}
+        />
+
+        <View style={{flexDirection: 'row', marginTop: 20}}>
+          <Text>Already have an accoutn? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.link}>Login</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
@@ -73,16 +64,22 @@ const SignupForm = ({ onLoginPress }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20,
+  },
+  wrapper: {
+    width: '80%',
   },
   input: {
-    height: 40,
+    marginBottom: 12,
     borderWidth: 1,
-    borderColor: 'gray',
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    borderColor: '#bbb',
+    borderRadius: 5,
+    paddingHorizontal: 14,
+  },
+  link: {
+    color: 'blue',
   },
 });
 
-export default SignupForm;
+export default RegisterScreen;
