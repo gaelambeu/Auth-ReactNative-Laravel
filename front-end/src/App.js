@@ -3,7 +3,7 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import LoginForm from './screens/LoginForm';
 import HomePage from './screens/HomePage';
-import WelcomePage from './screens/WelcomePage';
+import UserPage from './screens/UserPage';
 import RegisterForm from './screens/RegisterForm';
 
 
@@ -15,7 +15,7 @@ function App() {
 		<Route path="/" element={< HomePage/>} />
 		<Route path="/LoginForm" element={< LoginForm/>} />
 		<Route path="/RegisterForm" element={< RegisterForm/>} />
-		<Route path="/WelcomePage" element={< WelcomePage/>} />
+		<Route path="/UserPage" element={< UserPage/>} />
 	</Routes> 
 	)
 }
