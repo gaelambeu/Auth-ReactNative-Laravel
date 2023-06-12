@@ -11,7 +11,7 @@ function Register() {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('url_de_ton_api/register', { name, email, password });
+      const response = await axios.post('http://127.0.0.1:8000/api/auth/register', { name, email, password });
       const token = response.data.token;
       // Store the token in local storage or in global state of your choice
       console.log('Token:', token);

@@ -11,7 +11,7 @@ function UserPage() {
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem('token'); // Récupère le token depuis le local storage
-      const response = await axios.get('url_de_ton_api/user', {
+      const response = await axios.get('http://127.0.0.1:8000/api/auth/user-profile', {
         headers: { Authorization: `Bearer ${token}` },
       });
       const userData = response.data;
