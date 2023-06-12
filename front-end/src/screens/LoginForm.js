@@ -1,68 +1,47 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const ConnexionForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const member = { email, password };
+function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [redirectToUser, setRedirectToUser] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    Axios.post("http://127.0.0.1:8000/api/auth/login", member)
-      .then(() => {
-        console.log("Requette reussie avec succès", member);
-        // Redirect to the user page
-        navigate("/UserPage");
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('url_de_ton_api/login', { email, password });
+      const token = response.data.token;
+      // Store the token in local storage or in global state of your choice
+      console.log('Token:', token);
+      setRedirectToUser(true); // Set redirectToUser to true to activate the conditional rendering
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  return (
-    <>
-      <div className="header-connexion">
-        <div className="backdrop">
-          <div className="main-section">
-            <h3>Veuillez vous connecter</h3>
-            <div className="containForm">
-              <form onSubmit={handleSubmit}>
-                <div className="mt-3">
-                  <label htmlFor="email" className="form-label">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    aria-describedby="emailHelp"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                <div className="mt-3">
-                  <label htmlFor="password" className="form-label">
-                    Mot de passe
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
-                <button className="btn btn-primary mt-3 w-100">Valider</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
+  if (redirectToUser) {
+    navigate('/user'); // Use navigate('/user') to redirect to "/user"
+  }
 
-export default ConnexionForm;
+  return (
+    <div>
+      <h2>Login</h2>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Mot de passe"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button onClick={handleLogin}>Se connecter</button>
+    </div>
+  );
+}
+
+export default Login;

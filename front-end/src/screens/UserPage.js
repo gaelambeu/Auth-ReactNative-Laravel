@@ -1,34 +1,38 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const UserPage = () => {
+function UserPage() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Effectuez une requête GET à votre API pour récupérer les informations de l'utilisateur
-    axios.get("http://127.0.0.1:8000/api/auth/user-profile", {
-      headers: {
-        Authorization: "Bearer votre_token_d'accès"
-      }
-    })
-      .then(response => {
-        setUser(response.data); // Mettez à jour l'état de l'utilisateur avec les données récupérées de l'API
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }, []); // Utilisez une dépendance vide pour vous assurer que cette requête n'est effectuée qu'une seule fois lors du montage du composant
+    fetchUser();
+  }, []);
 
-  if (!user) {
-    return <p>Chargement en cours...</p>;
-  }
+  const fetchUser = async () => {
+    try {
+      const token = localStorage.getItem('token'); // Récupère le token depuis le local storage
+      const response = await axios.get('url_de_ton_api/user', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const userData = response.data;
+      setUser(userData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div>
-      <h2>Bienvenue, {user.name}</h2>
-      <p>Email: {user.email}</p>
+      <h2>Page Utilisateur</h2>
+      <button onClick={fetchUser}>Afficher les informations utilisateur</button>
+      {user && (
+        <div>
+          <p>Nom: {user.name}</p>
+          <p>Email: {user.email}</p>
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default UserPage;

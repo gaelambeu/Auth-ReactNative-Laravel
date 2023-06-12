@@ -1,128 +1,54 @@
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import Axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-
-
-const RegisterForm = () => {
-  // const nmbrAleatoire = (min, max) => {
-  //   const unitArray = new Uint32Array(1);
-  //   crypto.getRandomValues(unitArray);
-  //   let randomNumber = unitArray[0];
-  //   return randomNumber;
-  // };
-  // nmbrAleatoire();
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [password_confirmation, setPasswordConfirmation] = useState("");
-
+function Register() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [redirectToUser, setRedirectToUser] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // setPassword(nmbrAleatoire());
-
-    const member = {
-      name,
-      email,
-      password,
-      password_confirmation,
-    };
-
-    console.log(member);
-
-    Axios.post("http://127.0.0.1:8000/api/auth/register", member)
-      .then((result) => {
-        console.log("Membre inséré avec succès");
-        navigate("/LoginForm");
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+  const handleRegister = async () => {
+    try {
+      const response = await axios.post('url_de_ton_api/register', { name, email, password });
+      const token = response.data.token;
+      // Store the token in local storage or in global state of your choice
+      console.log('Token:', token);
+      setRedirectToUser(true); // Set redirectToUser to true to activate the conditional rendering
+    } catch (error) {
+      console.error(error);
+    }
   };
 
+  if (redirectToUser) {
+    navigate('/user'); // Use navigate('/user') to redirect to "/user"
+  }
+
   return (
-    <>
-      <div className="header-register">
-        <div className="backdrop">
-          
-
-          <div className="container main-section">
-            <h3>Formulaire d'enregistrement</h3>
-            <div className="containForm">
-              
-
-              <form class="row g-3" onSubmit={handleSubmit}>
-                <div class="col-md-6">
-                  <label htmlFor="name" class="form-label">
-                    Nom
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    class="form-control"
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-                
-                <div class="col-md-6">
-                  <label htmlFor="email" class="form-label">
-                    Email
-                  </label>
-                  <input
-                    required
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                
-                <div className="mt-3">
-                  <label htmlFor="password" className="form-label">
-                    Mot de passe
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                  />
-                </div>
-
-                <div className="mt-3">
-                  <label htmlFor="password" className="form-label">
-                    Mot de passe confirmation
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password_confirmation"
-                    value={password_confirmation}
-                    onChange={e => setPasswordConfirmation(e.target.value)}
-                  />
-                </div>
-                
-
-                
-                
-
-                <div className="col-12">
-                  <button class="btn btn-primary w-100">Enregistrer</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+    <div>
+      <h2>Register</h2>
+      <input
+        type="text"
+        placeholder="Nom"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Mot de passe"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button onClick={handleRegister}>S'inscrire</button>
+    </div>
   );
-};
+}
 
-export default RegisterForm;
+export default Register;
