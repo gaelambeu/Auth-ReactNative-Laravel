@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 function UserPage() {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUser();
@@ -10,8 +13,7 @@ function UserPage() {
 
   const fetchUser = async () => {
     try {
-      const token = localStorage.getItem('token'); // Récupère le token depuis le local storage
-      const response = await axios.get('http://127.0.0.1:8000/api/auth/user-profile', {
+      const response = await axios.get("http://127.0.0.1:8000/api/user-profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const userData = response.data;
@@ -21,16 +23,24 @@ function UserPage() {
     }
   };
 
+  const logout = () => {
+    axios.post("http://127.0.0.1:8000/api/auth/logout", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setToken("");
+    navigate("/LoginForm"); // Redirect to the login page
+  };
+
   return (
     <div>
-      <h2>Page Utilisateur</h2>
-      <button onClick={fetchUser}>Afficher les informations utilisateur</button>
+      <h2>User Page</h2>
       {user && (
         <div>
-          <p>Nom: {user.name}</p>
+          <p>Name: {user.name}</p>
           <p>Email: {user.email}</p>
         </div>
       )}
+      <button onClick={logout}>Logout</button>
     </div>
   );
 }

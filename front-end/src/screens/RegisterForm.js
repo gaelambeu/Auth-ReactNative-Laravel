@@ -22,7 +22,7 @@ function Register() {
   };
 
   if (redirectToUser) {
-    navigate('/user'); // Use navigate('/user') to redirect to "/user"
+    navigate('/UserPage'); // Use navigate('/user') to redirect to "/user"
   }
 
   return (
